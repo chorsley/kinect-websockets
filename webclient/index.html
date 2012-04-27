@@ -1,21 +1,31 @@
 <HTML>
     <HEAD>
-        <script type="text/javascript" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+   </HEAD>
+    <BODY>
+        <DIV id="viz" style="border: 1px solid black"></DIV>
+    </BODY>
 
-        <SCRIPT>
-            var ws = new WebSocket('ws://localhost:8888/');
-            ws.onopen = function(){
-                ws.onmessage = function(msg) {
-                    //console.log(msg.data);
-                    data = JSON.parse(msg.data);
-                    if (data["gesture"] === "Wave"){
-                        console.log("Wave")
-                    }
+    <SCRIPT src="lib/d3.v2.min.js"></SCRIPT>
+    <SCRIPT src="lib/d3_kinect.js"></SCRIPT>
+    <SCRIPT src="lib/eve.min.js"></SCRIPT>
+    <SCRIPT src="lib/underscore-min.js"></SCRIPT>
+    <SCRIPT>
+        var kinect_d3 = kinect_d3();
+        kinect_d3.init();
+
+        var ws = new WebSocket('ws://localhost:8888/');
+        ws.onopen = function(){
+            ws.onmessage = function(msg) {
+                //console.log(msg.data);
+                data = JSON.parse(msg.data);
+                if (data["gesture"] === "RaiseHand"){
+                    eve("kinect.raisehand", null, data["coord"]);
+                }
+                if (data["gesture"] === "Wave"){
+                    console.log("Wave")
+                    eve("kinect.wave");
                 }
             }
-        </SCRIPT>
-    </HEAD>
-    <BODY>
-        
-    </BODY>
+        }
+    </SCRIPT>
 </HTML>
