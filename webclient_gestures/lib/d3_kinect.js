@@ -1,19 +1,22 @@
 var kinect_d3 = function(){
     //"use strict";
 
+    // http://depts.washington.edu/aimgroup/proj/dollar/index.html
+    // http://depts.washington.edu/aimgroup/proj/dollar/ndollar.html
+
     var that = this;
 
     that.canvas;
     that.canw = 1000;
     that.canh = 800;
 
-    that.gesture_activate_time = 1000;
-    that.coord_buffer_length = 500;
+    that.gesture_activate_time = 750;
+    that.coord_buffer_length = 700;
 
     that.points = new Array();
     that.last_action_time;
     that.gesture_mode = false;
-    that.dollar = new NDollarRecognizer(true);
+    that.dollar = new DollarRecognizer();
 
     that.x_range = d3.scale.linear()
                           .domain([1000, -1000])
@@ -53,6 +56,8 @@ var kinect_d3 = function(){
             .attr("class", "circ")
             .attr("stroke", "black");
 
+        points.exit().remove();
+
         points
             .attr("fill", function(){ return (that.gesture_mode ? "red" : "#deebfa") })
             .attr("r", function(d) { return d[2] })
@@ -61,10 +66,10 @@ var kinect_d3 = function(){
     };
 
     that.add_point = function(coords){
-        that.points.push([Math.round(x_range(coords[0])), 
+        that.points.push(new Array(Math.round(x_range(coords[0])), 
                           Math.round(y_range(coords[1])), 
                           Math.round(z_range(coords[2]))
-                         ]);
+                         ));
 
         if (that.points.length > that.coord_buffer_length){
             that.points.shift();
@@ -79,11 +84,17 @@ var kinect_d3 = function(){
         if (Date.now() - that.last_action_time > that.gesture_activate_time){
             that.last_action_time = Date.now();
             that.gesture_mode = that.gesture_mode ? false : true;
+            //console.log(that.points_to_dollar_points(that.points));// reset points as we start a gesture
 
-            if (that.gesture_mode === false){
-                that.recognise_gesture();
-                that.points = that.points.splice(that.points.length - 1, that.points.length - 1); // reset points as we start a gesture
+            if (that.gesture_mode){
+                that.points = [that.points[that.points.length - 1]];
             }
+            else {
+                that.recognise_gesture();
+                //console.log(points);// reset points as we start a gesture
+            }
+
+            //that.points = [that.points[that.points.length - 1]];
 
             // TODO: change draw code to remove deleted coords
             draw();
@@ -95,25 +106,28 @@ var kinect_d3 = function(){
         // protractor seems to be much less accurate in limited tests
         var protractor = true;
 
-        var result = that.dollar.Recognize(
+        // multi stroke version
+        /*var result = that.dollar.Recognize(
           that.points_to_strokes(),
           protractor,
           true,
           false,
-          false);
+          false);*/
 
-        console.log(result, result.Name);
+        var result = that.dollar.Recognize(that.points_to_dollar_points(), protractor);
+
+        console.log(result, result.Name, result.Score);
       
     }
 
     that.points_to_dollar_points = function(){
         var dollar_points = new Array();
-
+        //console.log("Points pre-parse", that.points);
         for (point in that.points){
             //console.log(point);
-            dollar_points.push(new Point(point[0], point[1]));
+            dollar_points.push(new Point(that.points[point][0], that.points[point][1]));
         }
-        //console.log(dollar_points);
+        //console.log("Dollar pts", dollar_points);
         return dollar_points;
     }
 

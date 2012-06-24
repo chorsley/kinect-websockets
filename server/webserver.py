@@ -13,6 +13,7 @@ CHAN = "kinect"
 def redis_listener():
     print "Redis thread started"
     r = redis.Redis(host='localhost', db=1)
+    
     chan = r.pubsub()
     chan.subscribe([CHAN])
     for message in chan.listen():

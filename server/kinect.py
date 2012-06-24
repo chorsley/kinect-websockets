@@ -51,10 +51,10 @@ try:
 
     # Register callbacks
     def gesture_detected(src, gesture, id, endPoint):
-        print "Detected gesture:", gesture
+        """print "Detected gesture:", gesture
         print "    Id: %s" % id
         print "    Endpoint: %s" % endPoint
-        print "    Src: %s" % src
+        print "    Src: %s" % src"""
         data = json.dumps({"coord": id, "gesture": gesture})
         print data
         red.publish(chan_name, data)

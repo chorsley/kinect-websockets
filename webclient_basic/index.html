@@ -21,8 +21,12 @@
                 if (data["gesture"] === "RaiseHand"){
                     eve("kinect.raisehand", null, data["coord"]);
                 }
-                if (data["gesture"] === "Wave"){
+                else if (data["gesture"] === "Wave"){
                     eve("kinect.wave");
+                }
+                else if (data["gesture"] === "Click"){
+                    console.log("Click!");
+                    eve("kinect.click");
                 }
             }
         }

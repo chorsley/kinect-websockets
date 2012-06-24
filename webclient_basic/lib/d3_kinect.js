@@ -1,4 +1,6 @@
 var kinect_d3 = function(){
+    //"use strict";
+
     var that = this;
 
     that.canvas;
@@ -11,11 +13,11 @@ var kinect_d3 = function(){
     that.colors = ["red", "blue", "orange", "pink", "black"];
 
     that.x_range = d3.scale.linear()
-                          .domain([500, -500])
+                          .domain([1000, -1000])
                           .range([0, that.canh]);
     
     that.y_range = d3.scale.linear()
-                          .domain([500, -500])
+                          .domain([1000, -1000])
                           .range([0, that.canw]);
     
     that.z_range = d3.scale.linear()
@@ -34,7 +36,7 @@ var kinect_d3 = function(){
              .attr("height", 500);
         that.draw();
         that.wave_count = 0;
-    }
+    };
 
     that.draw = function(){
         that.canvas
@@ -42,23 +44,25 @@ var kinect_d3 = function(){
           .attr("class", "circ")
           .attr("r", 10)
           .attr("cx", 200)
-          .attr("cy", 200)
-    }
+          .attr("cy", 200);
+    };
 
-    that.grow_circle = function(coords){
+    that.move_circle = function(coords){
 
-        var x = coords[0];
-        var y = coords[1];
-        var z = coords[2];
+        var x = coords[0],
+            y = coords[1],
+            z = coords[2];
 
         for (var i = 0; i < threshes.length; i++){
             //console.log(coords[i], threshes[i]);
             if (Math.abs(coords[i]) > threshes[i]){
+                console.log("Outside range");
+                console.log(coords);
                 return;
             }
         }
 
-        var circ = d3.select(".circ")
+        var circ = d3.selectAll(".circ")
                          .attr("r", that.z_range(z))
                          //.attr("fill", that.color_range(z))
                          .attr("cx", that.x_range(x))
@@ -67,14 +71,24 @@ var kinect_d3 = function(){
 
     that.next_color = function(){
         that.wave_count = that.wave_count + 1;
-        d3.select(".circ")
+        d3.selectAll(".circ")
           .transition()
           .attr("fill", that.colors[that.wave_count % (that.colors.length - 1)]);
     }
 
+    that.make_circle = function(){
+        that.canvas
+            .append("svg:circle")
+            .attr("class", "circ")
+            .attr("r", 10)
+            .attr("cx", 200)
+            .attr("cy", 200);
+    }
+
     //_.throttle(that.grow_circle)
     eve.on("kinect.wave", that.next_color)
-    eve.on("kinect.raisehand", that.grow_circle)
+    eve.on("kinect.raisehand", that.move_circle)
+    eve.on("kinect.click", that.make_circle)
 
     return that;
 }
