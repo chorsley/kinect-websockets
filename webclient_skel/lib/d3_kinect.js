@@ -49,17 +49,7 @@ var kinect_d3 = function(){
              // set width and height attributes
              .attr("width", that.canw)
              .attr("height", that.canh);
-        that.draw();
         that.wave_count = 0;
-    };
-
-    that.draw = function(){
-        /*that.canvas
-          .append("svg:circle")
-          .attr("class", "circ")
-          .attr("r", 10)
-          .attr("cx", 200)
-          .attr("cy", 200);*/
     };
 
     that.move_circle = function(coords, joint){
@@ -77,9 +67,9 @@ var kinect_d3 = function(){
             }
         }
 
-        if (joint == "SKEL_RIGHT_HAND"){
-            document.body.style.background = that.mood_color_range(y);
-        }
+        //if (joint == "SKEL_RIGHT_HAND"){
+        //    document.body.style.background = that.mood_color_range(y);
+        //}
 
         var scale_factor = that.limb_scaling[joint] ? that.limb_scaling[joint] : 1;
 
@@ -96,15 +86,6 @@ var kinect_d3 = function(){
             .attr("cy", that.y_range(y))
     }
 
-    that.next_color = function(){
-        that.wave_count = that.wave_count + 1;
-        d3.selectAll(".circ")
-          .transition()
-          .attr("fill", that.colors[that.wave_count % (that.colors.length - 1)]);
-    }
-
-    //_.throttle(that.grow_circle)
-    eve.on("kinect.wave", that.next_color)
     eve.on("kinect.joint_move", that.move_circle)
 
     return that;
