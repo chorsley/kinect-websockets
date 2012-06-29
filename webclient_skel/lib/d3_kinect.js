@@ -15,6 +15,12 @@ var kinect_d3 = function(){
         SKEL_HEAD: 1.5,
         SKEL_LEFT_ELBOW: 0.5,
         SKEL_RIGHT_ELBOW: 0.5,
+        SKEL_LEFT_KNEE: 0.5,
+        SKEL_RIGHT_KNEE: 0.5,
+        SKEL_LEFT_HAND: 0.75,
+        SKEL_RIGHT_HAND: 0.75,
+        SKEL_LEFT_FOOT: 0.75,
+        SKEL_RIGHT_FOOT: 0.75,
     };
 
     that.x_range = d3.scale.linear()
@@ -27,12 +33,16 @@ var kinect_d3 = function(){
     
     that.z_range = d3.scale.linear()
                           .domain([0, 7000])
-                          .range([that.canw / 8, 2]);
+                          .range([that.canw / 7, 2]);
 
     that.color_range = d3.scale.linear()
                           .domain([0, 7000])
                           .range(["red", "black"]);
     
+    that.mood_color_range = d3.scale.linear()
+                              .domain([1000, -1000])
+                              .range(["gold", "blue"])
+
     that.init = function(){
         that.canvas = d3.select("#viz")
              .append("svg:svg")
@@ -65,6 +75,10 @@ var kinect_d3 = function(){
                 console.log(coords);
                 return;
             }
+        }
+
+        if (joint == "SKEL_RIGHT_HAND"){
+            document.body.style.background = that.mood_color_range(y);
         }
 
         var scale_factor = that.limb_scaling[joint] ? that.limb_scaling[joint] : 1;
