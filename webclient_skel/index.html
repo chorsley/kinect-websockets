@@ -1,0 +1,26 @@
+<HTML>
+    <HEAD>
+   </HEAD>
+    <BODY>
+        <DIV id="viz" style="border: 1px solid black"></DIV>
+    </BODY>
+
+    <SCRIPT src="lib/d3.v2.min.js"></SCRIPT>
+    <SCRIPT src="lib/d3_kinect.js"></SCRIPT>
+    <SCRIPT src="lib/eve.min.js"></SCRIPT>
+    <SCRIPT src="lib/underscore-min.js"></SCRIPT>
+    <SCRIPT>
+        var kinect_d3 = kinect_d3();
+        kinect_d3.init();
+        
+        var ws = new WebSocket('ws://localhost:8888/');
+        ws.onopen = function(){
+            ws.onmessage = function(msg) {
+                //console.log(msg.data);
+                data = JSON.parse(msg.data);
+
+                eve("kinect.joint_move", null, data["coord"], data["joint"]);
+            }
+        }
+    </SCRIPT>
+</HTML>
