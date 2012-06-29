@@ -101,7 +101,7 @@ while True:
             #head = skel_cap.get_joint_position(id, SKEL_HEAD)
             #print "  {}: head at ({loc[0]}, {loc[1]}, {loc[2]}) [{conf}]" .format(id, loc=head.point, conf=head.confidence)
             
-            for joint_name in [SKEL_LEFT_HAND, SKEL_LEFT_ELBOW, SKEL_RIGHT_HAND, SKEL_RIGHT_ELBOW, SKEL_HEAD, SKEL_LEFT_FOOT, SKEL_RIGHT_FOOT]:#, SKEL_LEFT_KNEE, SKEL_RIGHT_KNEE,SKEL_TORSO, SKEL_WAIST]:
+            for joint_name in [SKEL_LEFT_HAND, SKEL_LEFT_ELBOW, SKEL_RIGHT_HAND, SKEL_RIGHT_ELBOW, SKEL_HEAD, SKEL_LEFT_KNEE, SKEL_RIGHT_KNEE]:#, SKEL_LEFT_KNEE, SKEL_RIGHT_KNEE,SKEL_TORSO, SKEL_WAIST]:
                 joint = skel_cap.get_joint_position(id, joint_name)
                 #print "  {}: left hand at ({loc[0]}, {loc[1]}, {loc[2]}) [{conf}]" .format(id, loc=hand.point, conf=hand.confidence)
                 
